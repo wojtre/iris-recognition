@@ -1,5 +1,3 @@
-import math
-
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.stats import logistic
@@ -14,21 +12,22 @@ class LogReg:
         self.W = np.random.randn(1, 2) * 0.01
         self.b = np.random.randn(1) * 0.01
 
-    def pred(self, W, X, b):
+    def pred(self, X):
+        return self.__pred(self.W, X, self.b)
+
+    def __pred(self, W, X, b):
         return logistic.cdf(np.dot(X, W.T) + b)
 
     def __loglikelihood(self, X, Z, W, b):
-        Y = self.pred(W, X, b)
-        return -np.sum(Z.reshape(Z.size,1) * np.log(Y) + (1 - Z.reshape(Z.size,1)) * np.log(1 - Y), 0)
+        Y = self.__pred(W, X, b)
+        return -np.sum(Z.reshape(Z.size, 1) * np.log(Y) + (1 - Z.reshape(Z.size, 1)) * np.log(1 - Y), 0)
 
     def __grad(self, X, Z, W, b):
-        dW = np.sum((logistic.cdf(np.dot(X, W.T) - Z.reshape(Z.size,1)) * X))
-        db = np.sum((logistic.cdf(b - Z.reshape(Z.size,1)) * X))
+        dW = np.sum((logistic.cdf(np.dot(X, W.T) - Z.reshape(Z.size, 1)) * X))
+        db = np.sum((logistic.cdf(b - Z.reshape(Z.size, 1)) * X))
         return dW, db
 
     def train(self):
-
-
         train_loss = []
         for i in range(self.epochs):
             dLdW, dLdb = self.__grad(self.X, self.Z, self.W, self.b)
@@ -47,6 +46,6 @@ class LogReg:
         xx = np.linspace(-30, 30)
         yy = a * xx - (self.b[0]) / self.W[0, 1]
 
-        ax.plot(xx, yy )
+        ax.plot(xx, yy)
         plt.interactive(False)
         plt.show()
