@@ -1,8 +1,13 @@
 import data.Iris as iris
 import log_reg.LogReg as lg
-import matplotlib.pyplot as plt
 
 
+def test(XT, ZT, classifier):
+    errors = 0
+    for i in range(len(ZT)):
+        if (ZT[i] != classifier.classify(XT[i])):
+            errors += 1
+    return errors / len(ZT)
 
 
 # prepare data
@@ -17,5 +22,8 @@ ZT[ZT == 2] = 1
 X = X[:, :2]
 XT = XT[:, :2]
 
-model = lg.LogReg(XT, ZT)
-model.plot_decision_boundary(X,Z)
+model = lg.LogReg(X, Z, epochs=10000)
+model.train()
+model.plot_decision_boundary(XT, ZT)
+print("LogReg err: " + str(test(XT, ZT, model)))
+model.save_model("models\\log_reg")
