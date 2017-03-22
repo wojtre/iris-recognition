@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import pickle
 from scipy.stats import logistic
 
 
@@ -39,7 +40,7 @@ class LogReg:
 
     def plot_decision_boundary(self, X, Z):
         fig, ax = plt.subplots(1, 1, figsize=(5, 5))
-        # ax.scatter(X[:, 0], X[:, 1], c=Z, cmap=plt.cm.cool)
+        ax.scatter(X[:, 0], X[:, 1], c=Z, cmap=plt.cm.cool)
         ax.set_autoscale_on(False)
 
         a = - self.W[0, 0] / self.W[0, 1]
@@ -49,3 +50,12 @@ class LogReg:
         ax.plot(xx, yy)
         plt.interactive(False)
         plt.show()
+
+    def save_model(self, path="model"):
+        with open(path, 'wb') as f:
+            pickle.dump(self, f)
+
+    @staticmethod
+    def read_model(path="model"):
+        with open(path, 'rb') as f:
+            return pickle.load(f)
